@@ -19,6 +19,12 @@
                                     <th class="px-6 py-3 bg-gray-50 text-left">
                                         <span class="text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Price (USD)</span>
                                     </th>
+                                    <th class="px-6 py-3 bg-gray-50 text-left">
+                                        <span class="text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Price (BDT)</span>
+                                    </th>
+                                    <th class="px-6 py-3 bg-gray-50 text-left">
+                                        <span class="text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Price (RUB)</span>
+                                    </th>
                                 </tr>
                             </thead>
 
@@ -30,6 +36,12 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
                                         ${{ number_format($product->price, 2) }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
+                                        ৳{{ $product->price_bdt }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
+                                        ₽{{ $product->price_rub }}
                                     </td>
                                 </tr>
                                 @empty
