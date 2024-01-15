@@ -46,5 +46,25 @@ class ProductsTest extends TestCase
         });
     }
 
+    public function test_paginated_products_table_doesnt_contain_11th_record (): void
+    {
+        $products = Products::factory(11)->create();
 
+        // dd($products);
+        $lastProduct = $products->last();
+
+        // for ($i = 1; $i <= 11; $i++) {
+        //     $product = Products::create([
+        //         'name'  => 'Product' . $i,
+        //         'price' => rand(100,999),
+        //     ]);
+        // }
+
+        $response = $this->get('/products');
+
+        $response->assertStatus(200);
+        $response->assertViewHas('products', function ($collection) use ($lastProduct) {
+            return !$collection->contains($lastProduct);
+        });
+    }
 }

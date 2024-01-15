@@ -23,7 +23,7 @@ class CurrencyService
         $rate = self::RATES[$currencyFrom][$currencyTo] ?? 0;
 
         // Add this for debugging
-        echo "Converting $amount $currencyFrom to $currencyTo at rate: $rate\n";
+        // echo "Converting $amount $currencyFrom to $currencyTo at rate: $rate\n";
 
         return round($amount * $rate, 2);
     }
