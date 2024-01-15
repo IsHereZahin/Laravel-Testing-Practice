@@ -19,9 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 Route::middleware(['auth', 'verified'])->group(function(){
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/dashboard', function () {
         return view('dashboard'); })->name('dashboard');
 });

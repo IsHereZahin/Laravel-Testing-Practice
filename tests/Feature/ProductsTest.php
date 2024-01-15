@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Products;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -15,7 +16,8 @@ class ProductsTest extends TestCase
      */
     public function test_products_indexpage_contains_empty_table(): void
     {
-        $response = $this->get('/products');
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get('/products');
 
         $response->assertStatus(200);
 
@@ -24,6 +26,7 @@ class ProductsTest extends TestCase
 
     public function test_products_indexpage_contains_non_empty_table(): void
     {
+        $user = User::factory()->create();
         // Arrange
         $product = Products::create([
             'name'  => 'Product 1',
@@ -31,7 +34,7 @@ class ProductsTest extends TestCase
         ]);
 
         // Act
-        $response = $this->get('/products');
+        $response = $this->actingAs($user)->get('/products');
 
         // Dump variable for debugging
         // dump($product); //Check Database in Terminal
@@ -46,5 +49,26 @@ class ProductsTest extends TestCase
         });
     }
 
+    public function test_paginated_products_table_doesnt_contain_11th_record (): void
+    {
+        $user = User::factory()->create();
+        $products = Products::factory(11)->create();
 
+        // dd($products);
+        $lastProduct = $products->last();
+
+        // for ($i = 1; $i <= 11; $i++) {
+        //     $product = Products::create([
+        //         'name'  => 'Product' . $i,
+        //         'price' => rand(100,999),
+        //     ]);
+        // }
+
+        $response = $this->actingAs($user)->get('/products');
+
+        $response->assertStatus(200);
+        $response->assertViewHas('products', function ($collection) use ($lastProduct) {
+            return !$collection->contains($lastProduct);
+        });
+    }
 }
