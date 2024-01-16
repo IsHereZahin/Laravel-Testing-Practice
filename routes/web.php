@@ -19,12 +19,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route::redirect('/', 'login');
 
 Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/dashboard', function () {
-        return view('dashboard'); })->name('dashboard');
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::middleware('is_admin')->group(function () {
+        Route::get('product/create', [ProductController::class, 'create'])->name('product.create');
+        Route::post('product/store', [ProductController::class, 'store'])->name('product.store');
+    });
 });
+
 
 
 Route::middleware('auth')->group(function () {
