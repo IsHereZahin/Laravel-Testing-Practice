@@ -97,7 +97,7 @@ class ProductsTest extends TestCase
     public function test_admin_can_access_product_create_page()
     {
         $admin = User::factory()->create(['is_admin' => true]);
-        
+
         $response = $this->actingAs($admin)->get('/product/create');
 
         $response->assertStatus(200);
@@ -112,8 +112,51 @@ class ProductsTest extends TestCase
         $response->assertStatus(403);
     }
 
+    public function test_admin_can_store_products_in_store()
+    {
+        // Creating an admin user
+        $admin = User::factory()->create(['is_admin' => true]);
 
-    public function createUser(): mixed
+        // Acting as the admin user
+        $this->actingAs($admin);
+
+        // Creating a sample product data
+        $productData = [
+            'name' => 'Sample Product',
+            'price' => 99.99,
+        ];
+
+        // Making a POST request to the store route
+        $response = $this->post(route('product.store'), $productData);
+
+        // Asserting that the product was created successfully
+        $response->assertStatus(302); // Assuming redirect is used after successful creation
+        $this->assertDatabaseHas('products', $productData);
+    }
+
+    public function test_non_admin_cannot_store_product()
+    {
+        // Creating a non-admin user
+        $user = User::factory()->create(['is_admin' => false]);
+
+        // Act
+        $this->actingAs($user);
+
+        // Creating a sample product data
+        $productData = [
+            'name' => 'Sample Product',
+            'price' => 99.99,
+        ];
+
+        // Making a POST request to the store route
+        $response = $this->post(route('product.store'), $productData);
+
+        // Asserting
+        $response->assertStatus(403); // Assuming a forbidden status code is returned
+        $this->assertDatabaseMissing('products', $productData);
+    }
+
+    private function createUser(): User
     {
         return User::factory()->create();
     }
