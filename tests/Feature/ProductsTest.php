@@ -156,6 +156,24 @@ class ProductsTest extends TestCase
         $this->assertDatabaseMissing('products', $productData);
     }
 
+    public function test_admin_can_access_product_edit_page()
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+        $product = Products::factory()->create();
+        $response = $this->actingAs($user)->get(route('product.edit', $product));
+
+        $response->assertStatus(200);
+    }
+
+    public function test_non_admin_can_not_access_product_edit_page()
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+        $product = Products::factory()->create();
+        $response = $this->actingAs($user)->get(route('product.edit', $product));
+
+        $response->assertStatus(403);
+    }
+    
     private function createUser(): User
     {
         return User::factory()->create();

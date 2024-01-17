@@ -32,6 +32,11 @@
                                     <th class="px-6 py-3 bg-gray-50 text-left">
                                         <span class="text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Price (RUB)</span>
                                     </th>
+                                    @if (auth()->user()->is_admin)
+                                    <th class="px-6 py-3 bg-gray-50 text-left">
+                                        <span class="text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Action</span>
+                                    </th>
+                                    @endif
                                 </tr>
                             </thead>
 
@@ -50,6 +55,13 @@
                                     <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
                                         ₽{{ $product->price_rub }}
                                     </td>
+                                    @if (auth()->user()->is_admin)
+                                        <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
+                                            <a href="{{ route('product.edit', $product) }}" class="mb-4 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                Edit
+                                            </a>
+                                        </td>
+                                    @endif
                                 </tr>
                                 @empty
                                 <tr class="bg-white">
