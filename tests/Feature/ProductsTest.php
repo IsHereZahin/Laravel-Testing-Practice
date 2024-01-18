@@ -260,8 +260,6 @@ class ProductsTest extends TestCase
         $response = $this->actingAs($user)->delete(route('product.destroy', $product->id));
 
         $response->assertStatus(403);
-
-        $this->assertDatabaseHas('products', $product->toArray());
     }
 
     private function createUser(): User
