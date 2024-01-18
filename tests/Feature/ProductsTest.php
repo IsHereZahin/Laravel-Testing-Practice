@@ -160,7 +160,7 @@ class ProductsTest extends TestCase
     {
         $user = User::factory()->create(['is_admin' => true]);
         $product = Products::factory()->create();
-        $response = $this->actingAs($user)->get(route('product.edit', $product));
+        $response = $this->actingAs($user)->get(route('product.edit', $product->id));
 
         $response->assertStatus(200);
     }
@@ -169,11 +169,76 @@ class ProductsTest extends TestCase
     {
         $user = User::factory()->create(['is_admin' => false]);
         $product = Products::factory()->create();
-        $response = $this->actingAs($user)->get(route('product.edit', $product));
+        $response = $this->actingAs($user)->get(route('product.edit', $product->id));
 
         $response->assertStatus(403);
     }
-    
+
+    public function test_products_edit_contains_correct_values()
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+        $product = Products::factory()->create();
+        $response = $this->actingAs($user)->get(route('product.edit', $product->id));
+
+        $response->assertStatus(200);
+        $response->assertSee($product->name);
+        $response->assertSee($product->price);
+        $response->assertViewHas('product', $product);
+    }
+
+    public function test_admin_can_update_product()
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+        $product = Products::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('product.edit', $product->id));
+
+        $response->assertStatus(200);
+        $productData = [
+            'name' => 'Updated Product',
+            'price' => 99.99,
+        ];
+
+        $response = $this->put(route('product.update', $product->id), $productData);
+
+        $response->assertStatus(302);
+        $this->assertDatabaseHas('products', $productData);
+    }
+
+    public function test_non_admin_can_not_update_product()
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+        $product = Products::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('product.edit', $product->id));
+
+        $response->assertStatus(403);
+        $productData = [
+            'name' => 'Updated Product',
+            'price' => 99.99,
+        ];
+
+        $response = $this->put(route('product.update', $product->id), $productData);
+
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing('products', $productData);
+    }
+
+    public function test_product_update_validation_error_redirect_back_to_from()
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+        $product = Products::factory()->create();
+
+        $response = $this->actingAs($user)->put(route('product.update', $product->id), [
+            'name' => '',
+            'price' => '',
+        ]);
+
+        $response->assertStatus(302);
+        // $response->assertSessionHasErrors(['name']); // for single error
+        $response->assertInvalid(['name', 'price']); // for multiple errors
+    }
+
     private function createUser(): User
     {
         return User::factory()->create();
