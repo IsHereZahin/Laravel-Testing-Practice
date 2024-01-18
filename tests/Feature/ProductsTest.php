@@ -239,6 +239,31 @@ class ProductsTest extends TestCase
         $response->assertInvalid(['name', 'price']); // for multiple errors
     }
 
+    public function test_admin_can_delete_product_successful()
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+        $product = Products::factory()->create();
+
+        $response = $this->actingAs($user)->delete(route('product.destroy', $product->id));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('products.index'));
+
+        $this->assertDatabaseMissing('products', $product->toArray());
+    }
+
+    public function test_non_admin_can_not_delete_product()
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+        $product = Products::factory()->create();
+
+        $response = $this->actingAs($user)->delete(route('product.destroy', $product->id));
+
+        $response->assertStatus(403);
+
+        $this->assertDatabaseHas('products', $product->toArray());
+    }
+
     private function createUser(): User
     {
         return User::factory()->create();
