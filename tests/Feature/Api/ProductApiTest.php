@@ -20,4 +20,27 @@ class ProductApiTest extends TestCase
 
         $response->assertJson([$product->toArray()]);
     }
+
+    public function test_api_product_store_successful(): void
+    {
+        $product = [
+            'name' => 'test',
+            'price' => 100,
+        ];
+        $response = $this->postJson('/api/products', $product);
+
+        $response->assertStatus(200);
+        $response->assertJson($product);
+    }
+
+    public function test_api_product_invalid_store_returns_error(): void
+    {
+        $product = [
+            'name' => '',
+            'price' => 100,
+        ];
+        $response = $this->postJson('/api/products', $product);
+
+        $response->assertStatus(422);
+    }
 }
