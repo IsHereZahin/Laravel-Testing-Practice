@@ -1,7 +1,11 @@
 <?php
 
-test('example', function () {
-    $response = $this->get('/');
+// test('Unauthenticated users cannot access the products page', function () {
+//     $this->get('/products')
+//     ->assertRedirect('/login');
+// });
 
-    $response->assertStatus(200);
-});
+//Can be written as a shortcut
+test('Unauthenticated users cannot access the products page')
+    ->get('/products')
+    ->assertRedirect('/login');
