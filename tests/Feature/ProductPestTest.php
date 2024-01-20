@@ -33,3 +33,25 @@ test('Products indexpage contains non empty table', function(){
             return $collection->contains($product);
         });
 });
+
+test('Create product successful', function() {
+    $product = [
+        'name' => 'Product 123',
+        'price' => 1234,
+    ];
+
+    $this->actingAs($this->admin)
+        ->post(route('product.store'), $product)
+        ->assertRedirect('products');
+
+    $this->assertDatabaseHas('products', [
+        'name' => $product['name'],
+        'price' => (float) $product['price'],
+    ]);
+
+    $lastProduct = Products::latest()->first();
+    expect($lastProduct->name)->toBe($product['name']);
+    expect($lastProduct->price)->toBe((float)$product['price']);
+});
+
+// More test expectations practice can be found here: https://pestphp.com/docs/expectations
