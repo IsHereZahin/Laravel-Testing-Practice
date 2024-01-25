@@ -262,6 +262,31 @@ class ProductsTest extends TestCase
         $response->assertStatus(403);
     }
 
+    public function test_homepage_contains_table_products(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $product = Products::create([
+            'name'  => 'Product',
+            'price' =>123,
+        ]);
+
+        $response = $this->actingAs($admin)->get('/products');
+        $response->assertOk();
+        $response->assertSeeText($product->name);
+    }
+
+    public function test_homepage_contains_products_in_order(): void
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+
+        [$product1, $product2] = Products::factory(2)->create();
+        $response = $this->actingAs($user)->get('/products');
+        $response->assertOk();
+        $response->assertSeeInOrder([$product1->name, $product2->name]);
+    }
+
+    
     private function createUser(): User
     {
         return User::factory()->create();
