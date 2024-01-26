@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Products;
 use App\Models\User;
+use App\Services\ProductService;
+use Brick\Math\Exception\NumberFormatException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -308,6 +310,25 @@ class ProductsTest extends TestCase
     // assertForbidden()    for 403 Forbidden
     // assertNotFound()     for 404 Not Found
     // assertServerError()  for 500 Internal Server Error
+
+    public function test_product_service_create_retruns_product(): void
+    {
+        $product = (new ProductService())->create('Test Product', '10');   // Try prices less than 10 and more than 1000.
+        $this->assertInstanceOf(Products::class, $product);
+    }
+
+    public function test_product_service_create_validation(): void
+    {
+        try
+        {
+            (new ProductService())->create('To Big price', '100000');      // Try 10 > $price < 1000
+        }
+        catch (\Exception $e)
+        {
+            $this->assertInstanceOf(NumberFormatException::class, $e);
+        }
+    }
+
 
     private function createUser(): User
     {
