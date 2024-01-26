@@ -20,8 +20,8 @@ class ProductsTest extends TestCase
         $user = $this->createUser();
         $response = $this->actingAs($user)->get('/products');
 
-        $response->assertStatus(200);
-
+        // $response->assertStatus(200);
+        $response->assertOk();
         $response->assertSee(__('No products found'));
     }
 
@@ -41,7 +41,8 @@ class ProductsTest extends TestCase
         // dump($product); //Check Database in Terminal
 
         // Assert
-        $response->assertStatus(200);
+        // $response->assertStatus(200);
+        $response->assertOk();
         $response->assertDontSee(__('No products found'));
         $response->assertSee('Product 1');
         $response->assertSee('name');
@@ -67,7 +68,8 @@ class ProductsTest extends TestCase
 
         $response = $this->actingAs($user)->get('/products');
 
-        $response->assertStatus(200);
+        // $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewHas('products', function ($collection) use ($lastProduct) {
             return !$collection->contains($lastProduct);
         });
@@ -78,7 +80,8 @@ class ProductsTest extends TestCase
 
         $response = $this->actingAs($admin)->get('/products');
 
-        $response->assertStatus(200);
+        // $response->assertStatus(200);
+        $response->assertOk();
         $response->assertSee('Add new product');
     }
 
@@ -89,7 +92,8 @@ class ProductsTest extends TestCase
 
         $response = $this->actingAs($user)->get('/products');
 
-        $response->assertStatus(200);
+        // $response->assertStatus(200);
+        $response->assertOk();
         $response->assertDontSee('Add new product');
     }
 
@@ -100,7 +104,8 @@ class ProductsTest extends TestCase
 
         $response = $this->actingAs($admin)->get('/product/create');
 
-        $response->assertStatus(200);
+        // $response->assertStatus(200);
+        $response->assertOk();
     }
 
     public function test_non_admin_cannot_access_product_create_page()
@@ -109,7 +114,8 @@ class ProductsTest extends TestCase
 
         $response = $this->actingAs($user)->get('/product/create');
 
-        $response->assertStatus(403);
+        // $response->assertStatus(403);
+        $response->assertForbidden();
     }
 
     public function test_admin_can_store_products_in_store()
@@ -152,7 +158,8 @@ class ProductsTest extends TestCase
         $response = $this->post(route('product.store'), $productData);
 
         // Asserting
-        $response->assertStatus(403); // Assuming a forbidden status code is returned
+        // $response->assertStatus(403); // Assuming a forbidden status code is returned
+        $response->assertForbidden();
         $this->assertDatabaseMissing('products', $productData);
     }
 
@@ -162,7 +169,8 @@ class ProductsTest extends TestCase
         $product = Products::factory()->create();
         $response = $this->actingAs($user)->get(route('product.edit', $product->id));
 
-        $response->assertStatus(200);
+        // $response->assertStatus(200);
+        $response->assertOk();
     }
 
     public function test_non_admin_can_not_access_product_edit_page()
@@ -171,7 +179,8 @@ class ProductsTest extends TestCase
         $product = Products::factory()->create();
         $response = $this->actingAs($user)->get(route('product.edit', $product->id));
 
-        $response->assertStatus(403);
+        // $response->assertStatus(403);
+        $response->assertForbidden();
     }
 
     public function test_products_edit_contains_correct_values()
@@ -180,7 +189,8 @@ class ProductsTest extends TestCase
         $product = Products::factory()->create();
         $response = $this->actingAs($user)->get(route('product.edit', $product->id));
 
-        $response->assertStatus(200);
+        // $response->assertStatus(200);
+        $response->assertOk();
         $response->assertSee($product->name);
         $response->assertSee($product->price);
         $response->assertViewHas('product', $product);
@@ -212,7 +222,8 @@ class ProductsTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('product.edit', $product->id));
 
-        $response->assertStatus(403);
+        // $response->assertStatus(403);
+        $response->assertForbidden();
         $productData = [
             'name' => 'Updated Product',
             'price' => 99.99,
@@ -220,7 +231,8 @@ class ProductsTest extends TestCase
 
         $response = $this->put(route('product.update', $product->id), $productData);
 
-        $response->assertStatus(403);
+        // $response->assertStatus(403);
+        $response->assertForbidden();
         $this->assertDatabaseMissing('products', $productData);
     }
 
@@ -259,7 +271,8 @@ class ProductsTest extends TestCase
 
         $response = $this->actingAs($user)->delete(route('product.destroy', $product->id));
 
-        $response->assertStatus(403);
+        // $response->assertStatus(403);
+        $response->assertForbidden();
     }
 
     public function test_homepage_contains_table_products(): void
@@ -286,7 +299,16 @@ class ProductsTest extends TestCase
         $response->assertSeeInOrder([$product1->name, $product2->name]);
     }
 
-    
+    // AssertStatus(200) VS AssertOk(), Using these methods not only makes your test code more readable but also helps in quickly understanding the intent of your assertions.
+    // assertOk()           for 200 OK
+    // assertCreated()      for 201 Created
+    // assertNoContent()    for 204 No Content
+    // assertBadRequest()   for 400 Bad Request
+    // assertUnauthorized() for 401 Unauthorized
+    // assertForbidden()    for 403 Forbidden
+    // assertNotFound()     for 404 Not Found
+    // assertServerError()  for 500 Internal Server Error
+
     private function createUser(): User
     {
         return User::factory()->create();
