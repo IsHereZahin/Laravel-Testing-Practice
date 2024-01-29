@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
 use App\Models\Products;
 use Illuminate\Http\Request;
 
@@ -13,8 +14,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Products::all();
-        return response()->json($products);
+         $products = Products::all();
+        // return response()->json($products);
+        return ProductResource::collection($products);
     }
 
     /**
@@ -42,9 +44,10 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $product = Products::findOrFail($id);
+        return new ProductResource($product);
     }
 
     /**
@@ -60,7 +63,14 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' =>'required',
+            'price' =>'required',
+        ]);
+
+        $product = Products::findOrFail($id);
+        $product->update($request->all());
+        return response()->json($request->all());
     }
 
     /**
