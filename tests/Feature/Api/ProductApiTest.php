@@ -93,7 +93,7 @@ class ProductApiTest extends TestCase
         $response = $this->postJson('/api/products', $product);
 
         $response->assertUnprocessable();
-        $response->assertJsonValidationErrors('price');
+        $response->assertJsonMissingValidationErrors('name');
         $response->assertInvalid('price');
         // /OR
         // $response->assertJson([

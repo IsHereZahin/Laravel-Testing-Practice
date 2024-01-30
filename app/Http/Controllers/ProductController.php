@@ -83,4 +83,9 @@ class ProductController extends Controller
         Products::query()->findOrFail($id)->delete();
         return redirect()->route('products.index');
     }
+
+    public function download()
+    {
+        return response()->download(public_path('files/download.pdf'));
+    }
 }

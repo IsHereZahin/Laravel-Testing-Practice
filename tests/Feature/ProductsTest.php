@@ -198,6 +198,31 @@ class ProductsTest extends TestCase
         $response->assertViewHas('product', $product);
     }
 
+    public function test_product_edit_contains_correct_values(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $product = Products::factory()->create();
+        $this->assertDatabaseHas('products', [
+            'name' => $product->name,
+            'price' => $product->price,
+        ]);
+
+        $this->assertModelExists($product);
+        $response = $this->actingAs($admin)->get(route('product.edit', $product->id));
+
+        $response->assertOk();
+
+        // Assert input values using assertSee
+        // $response->assertSee($product->name);
+        // $response->assertSee((string) $product->price); // Convert price to string as assertSee works with strings
+
+        $response->assertSee('value="'.$product->name.'"', false);
+        $response->assertSee('value="'.(string) $product->price.'"', false);
+
+        $response->assertViewHas('product', $product);
+    }
+
     public function test_admin_can_update_product()
     {
         $user = User::factory()->create(['is_admin' => true]);
@@ -329,6 +354,12 @@ class ProductsTest extends TestCase
         }
     }
 
+    public function test_download_product_successful(): void
+    {
+        $response = $this->get('/download');
+        $response->assertOk();
+        $response->assertHeader('content-Disposition', 'attachment; filename=download.pdf');
+    }
 
     private function createUser(): User
     {

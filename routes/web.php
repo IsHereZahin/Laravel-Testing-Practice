@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/download', [ProductController::class, 'download'])->name('download');
 
 // Route::redirect('/', 'login');
 
