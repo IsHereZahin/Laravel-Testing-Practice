@@ -139,7 +139,11 @@ class ProductsTest extends TestCase
 
         // Asserting that the product was created successfully
         $response->assertStatus(302); // Assuming redirect is used after successful creation
-        $this->assertDatabaseHas('products', $productData);
+        
+        $this->assertDatabaseHas('products', [
+            'name' => $productData['name'],
+            'price' => $productData['price'] * 100, // Adjust this based on your setPriceAttribute logic
+        ]);
     }
 
     public function test_non_admin_cannot_store_product()
@@ -239,7 +243,11 @@ class ProductsTest extends TestCase
         $response = $this->put(route('product.update', $product->id), $productData);
 
         $response->assertStatus(302);
-        $this->assertDatabaseHas('products', $productData);
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'name' => $productData['name'],
+            'price' => $productData['price'] * 100, // Adjust this based on setPriceAttribute logic
+        ]);
     }
 
     public function test_non_admin_can_not_update_product()

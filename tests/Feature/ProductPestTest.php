@@ -46,12 +46,12 @@ test('Create product successful', function() {
 
     $this->assertDatabaseHas('products', [
         'name' => $product['name'],
-        'price' => (float) $product['price'],
+        'price' => (float) $product['price'] * 100, // Adjust this based on setPriceAttribute logic
     ]);
 
     $lastProduct = Products::latest()->first();
     expect($lastProduct->name)->toBe($product['name']);
-    expect($lastProduct->price)->toBe((float)$product['price']);
+    expect($lastProduct->price)->toBe((float)$product['price'] * 100); // Adjust this based on setPriceAttribute logic
 });
 
 // More test expectations practice can be found here: https://pestphp.com/docs/expectations
