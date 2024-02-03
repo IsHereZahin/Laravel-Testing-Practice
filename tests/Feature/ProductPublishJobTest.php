@@ -30,5 +30,18 @@ class ProductPublishJobTest extends TestCase
         $this->assertNotNull($product->updated_at);
     }
 
+    public  function test_job_product_publish_successful(): void
+    {
+        // Create a product
+        $product = Products::factory()->create();
+
+        // Assert that the product was updated in some way
+        $this->assertNotNull($product->updated_at);
+
+        (new ProductPublishJob($product->id))->handle();
+
+        $product->refresh();
+        $this->assertNotNull($product->published_at);
+    }
 
 }
