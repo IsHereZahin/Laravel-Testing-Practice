@@ -19,6 +19,8 @@ class ParentSetUpTest extends TestCase
     {
         parent::setUp();
 
+        info('Set up executed');  // Check all test history in storage/logs/laravel.log
+
         $this->user = $this->createUser();
         $this->admin = $this->createUser(isAdmin: true);
     }
