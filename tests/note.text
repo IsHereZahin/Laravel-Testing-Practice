@@ -1,0 +1,11 @@
+1) Error test skipped           - $this->markTestSkipped('Skipped it for now because there is an error');
+
+2) Debugging                    - dd();         /        dump();
+
+3) Check test history           - storage/logs/laravel.logs ///Check///
+
+4) Check test performance       - Xdebug install and use cmd (php artisan test --coverage --min80)
+
+5) Filter test                  - php artisan test --filter ________________________________Testname________________________________
+
+6) Error filtering              - $this->withoutExceptionHolding();
