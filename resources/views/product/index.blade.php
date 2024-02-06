@@ -24,6 +24,9 @@
                                         <span class="text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Name</span>
                                     </th>
                                     <th class="px-6 py-3 bg-gray-50 text-left">
+                                        <span class="text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Image</span>
+                                    </th>
+                                    <th class="px-6 py-3 bg-gray-50 text-left">
                                         <span class="text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Price (USD)</span>
                                     </th>
                                     <th class="px-6 py-3 bg-gray-50 text-left">
@@ -45,6 +48,9 @@
                                 <tr class="bg-white">
                                     <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
                                         {{ $product->name }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
+                                        <img src="{{ $product->image }}" alt="Product Image" style="height: 100px; width: 80px;">
                                     </td>
                                     <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
                                         ${{ number_format($product->price, 2) }}

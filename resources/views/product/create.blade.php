@@ -30,6 +30,13 @@
                                 <x-input id="price" class="block mt-1 w-full" type="text" name="price" :value="old('price')" required />
                             </div>
 
+                            <!-- Photo -->
+                            <div class="mt-4">
+                                <x-label for="photo" :value="__('Photo')" />
+
+                                <input type="file" id="photo" class="block mt-1 w-full" name="photo" />
+                            </div>
+
                             <div class="flex items-center mt-4">
                                 <x-button>
                                     {{ __('Save') }}

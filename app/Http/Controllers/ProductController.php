@@ -32,12 +32,23 @@ class ProductController extends Controller
         $request->validate([
             'name' =>'required',
             'price' =>'required',
+            'photo' =>'required',
         ]);
 
-        Products::query()->create([
+        if($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $currentDateTime = now()->format('Ymd_His');
+            $filename = $currentDateTime . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $filename);
+            $imagePath = 'images/' . $filename;
+        }
+
+        Products::create([
             'name' => $request->name,
             'price' => $request->price,
+            'image' => $imagePath ?? null,
         ]);
+
         return redirect()->route('products.index');
     }
 
