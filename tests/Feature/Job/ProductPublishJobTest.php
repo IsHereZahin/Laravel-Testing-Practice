@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Job;
 
 use App\Jobs\ProductPublishJob;
 use App\Models\Products;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\NewProductNotifyJob;
 use App\Models\Products;
 use Illuminate\Http\Request;
 
@@ -29,13 +30,19 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' =>'required',
             'price' =>'required',
             'image' =>'required',
         ]);
 
-        if($request->hasFile('image')) {
+        $product = Products::create([
+            'name' => $validatedData['name'],
+            'price' => $validatedData['price'],
+            'image' => $validatedData['image'],
+        ]);
+
+        if ($request->hasFile('image')) {
             $file = $request->file('image');
             $currentDateTime = now()->format('Ymd_His');
             $filename = $currentDateTime .'.'. $file->getClientOriginalExtension();
@@ -48,13 +55,13 @@ class ProductController extends Controller
 
             $file->move($directory, $filename);
             $imagePath = 'images/' . $filename;
+
+            // Update the product with the image path
+            $product->image = $imagePath;
+            $product->save();
         }
 
-        Products::create([
-            'name' => $request->name,
-            'price' => $request->price,
-            'image' => $imagePath ?? null,
-        ]);
+        NewProductNotifyJob::dispatch($product);
 
         return redirect()->route('products.index');
     }
