@@ -132,9 +132,10 @@ class ProductsTest extends TestCase
         $productData = [
             'name' => 'Sample Product',
             'price' => 99.99,
+            'image' => 'example.jpg',
         ];
 
-        // Making a POST request to the store route
+        // Making a POST request to the store route with the product data
         $response = $this->post(route('product.store'), $productData);
 
         // Asserting that the product was created successfully

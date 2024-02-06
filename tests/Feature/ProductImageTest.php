@@ -34,7 +34,7 @@ class ProductImageTest extends TestCase
         $product = [
             'name' => 'Product name',
             'price' => 100,
-            'photo' => UploadedFile::fake()->image($filename),
+            'image' => UploadedFile::fake()->image($filename),
         ];
 
         $response = $this->actingAs($this->admin)->post(route('product.store'), $product);

@@ -32,9 +32,9 @@
 
                             <!-- Photo -->
                             <div class="mt-4">
-                                <x-label for="photo" :value="__('Photo')" />
+                                <x-label for="image" :value="__('Photo')" />
 
-                                <input type="file" id="photo" class="block mt-1 w-full" name="photo" />
+                                <input type="file" id="image" class="block mt-1 w-full" name="image" />
                             </div>
 
                             <div class="flex items-center mt-4">

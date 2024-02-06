@@ -32,11 +32,11 @@ class ProductController extends Controller
         $request->validate([
             'name' =>'required',
             'price' =>'required',
-            'photo' =>'required',
+            'image' =>'required',
         ]);
 
-        if($request->hasFile('photo')) {
-            $file = $request->file('photo');
+        if($request->hasFile('image')) {
+            $file = $request->file('image');
             $currentDateTime = now()->format('Ymd_His');
             $filename = $currentDateTime .'.'. $file->getClientOriginalExtension();
 
