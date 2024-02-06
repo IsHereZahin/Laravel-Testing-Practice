@@ -38,8 +38,15 @@ class ProductController extends Controller
         if($request->hasFile('photo')) {
             $file = $request->file('photo');
             $currentDateTime = now()->format('Ymd_His');
-            $filename = $currentDateTime . $file->getClientOriginalExtension();
-            $file->move(public_path('images'), $filename);
+            $filename = $currentDateTime .'.'. $file->getClientOriginalExtension();
+
+            // Ensure images directory exists
+            $directory = public_path('images');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            $file->move($directory, $filename);
             $imagePath = 'images/' . $filename;
         }
 
